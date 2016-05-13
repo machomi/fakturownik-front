@@ -1,0 +1,510 @@
+<navbar></navbar>
+
+<form action="" role="form" id="invoice" method="post" enctype="multipart/form-data" class="hidden-print">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-2">
+        <div ng-show="!logo" id="logo_input" data-toggle="tooltip" dropzone="dropzoneConfig" data-placement="bottom" class="well center-block logo-text hidden-print" title="Kliknij lub przeciągnij Twoje logo tutaj">Logo</div>
+        <img ng-src="{{logo}}">
+      </div>
+      <div class="col-xs-6 col-xs-offset-4">
+        <div class="form-horizontal">
+          <div class="form-group">
+            <span class="col-sm-9 n-p-r text-right">
+              <div class="btn-group">
+                <button type="button" class="btn  dropdown-toggle" data-toggle="dropdown" aria-expanded="false" style="font-size: 24px; background: white;">
+                  Faktura VAT
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a href="">Faktura</a>
+                  </li>
+                  <li>
+                    <a href="">Faktura VAT</a>
+                  </li>
+                </ul>
+              </div>
+            </span>
+            <div class="col-sm-3" style="margin-top: 12px;">
+              <div class="input-group m-b dropdown">
+                <span class="input-group-addon" id="basic-addon1">#</span>
+                <input type="text" class="form-control input-sm hidden-print" required="" ng-model="invoice.obj.number" placeholder="Numer faktury">
+                <span class="visible-print-block" ng-model="invoice.obj.number"></span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-9 text-right" for="invoice_date">Data wystawienia:
+            </label>
+            <span class="visible-print-inline">{{invoice.obj.date}}</span>
+            <div class="col-sm-3 hidden-print">
+              <input data-provide="datepicker" data-date-language="pl" class="form-control input-sm" ng-model="invoice.obj.date" data-date-format="dd.mm.yyyy">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-9 text-right" for="invoice_date">Data sprzedaży:
+            </label>
+            <div class="col-sm-3">
+              <input data-provide="datepicker" data-date-language="pl" class="form-control input-sm hidden-print" ng-model="invoice.obj.delivery_date" data-date-format="dd.mm.yyyy">
+              <span class="visible-print-block" ng-model="invoice.obj.delivery_date"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-9 text-right">Termin płatności:</label>
+            <div class="col-sm-3">
+              <div class="input-group m-b dropdown">
+                <input data-provide="datepicker" data-date-language="pl" class="form-control input-sm" ng-model="invoice.obj.due_date" data-date-format="dd.mm.yyyy">
+                <span class="input-group-addon btn btn-default input-sm dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">
+                  <span class="caret" id="menu1" data-toggle="dropdown"></span>
+                </span>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                  <li role="presentation">
+                    <a role="menuitem" ng-click="invoice.obj.setDueDate(7)" tabindex="-1">7 dni</a>
+                  </li>
+                  <li role="presentation">
+                    <a role="menuitem" ng-click="invoice.obj.setDueDate(14)" tabindex="-1">14 dni</a>
+                  </li>
+                  <li role="presentation">
+                    <a role="menuitem" ng-click="invoice.obj.setDueDate(30)" tabindex="-1">30 dni</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-5">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4>Sprzedawca:</h4>
+            <input class="form-control input-sm" ng-model="invoice.obj.seller.name" required="" placeholder="Nazwa">
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <textarea class="form-control input-sm" rows="3" ng-model="invoice.obj.seller.details" placeholder="Adres, telefon, www etc." required=""></textarea>
+            </div>
+            <div class="">
+              <input class="form-control input-sm" ng-model="invoice.obj.seller.taxId" placeholder="NIP" required="">
+            </div>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-5 col-xs-offset-2">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>Nabywca:</h4>
+          <input class="form-control input-sm" ng-model="invoice.obj.buyer.name" placeholder="Nazwa" required="">
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <textarea class="form-control input-sm" rows="3" ng-model="invoice.obj.buyer.details" placeholder="Adres, telefon, www, etc." required=""></textarea>
+          </div>
+          <div class="">
+            <input class="form-control input-sm" ng-model="invoice.obj.buyer.taxId" placeholder="NIP" required="">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- / end client details section -->
+  <h4 class="hidden-print">Pozycje faktury</h4>
+  <table class="table table-bordered" id="invoiceItems">
+    <thead>
+      <tr>
+        <th></th>
+        <th>
+          <h4>Nazwa towaru lub usługi</h4>
+        </th>
+        <th>
+          <h4>PKWiU</h4>
+        </th>
+        <th>
+          <h4>Ilość</h4>
+        </th>
+        <th>
+          <h4>Jedn.</h4>
+        </th>
+        <th>
+          <h4>Cena jedn. netto</h4>
+        </th>
+        <!-- th>
+      <h4>Rabat</h4>
+    </th>
+    <th>
+    <h4>Cena z rabatem</h4>
+  </th -->
+        <th>
+          <h4>Wartość netto</h4>
+        </th>
+        <th>
+          <h4>Stawka Vat</h4>
+        </th>
+        <th>
+          <h4>Wartość Vat</h4>
+        </th>
+        <th>
+          <h4>Wartość brutto</h4>
+        </th>
+        <th class="hidden-print"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in invoice.obj.items">
+        <td>{{$index + 1}}</td>
+        <td style="width: 33%">
+          <input class="form-control input-sm" ng-model="item.description" required="required" placeholder="">
+        </td>
+        <td>
+          <input class="form-control input-sm" ng-model="item.pkwiu" placeholder="">
+        </td>
+        <td class="text-right">
+          <input class="form-control input-sm" ng-model="item.qty" required="required" type="number" step="1" min="1" placeholder="1" ng-change="invoice.obj.recalculate()">
+        </td>
+        <td class="text-right">
+          <input class="form-control input-sm" ng-model="item.unit" placeholder="">
+        </td>
+        <td style="width: 10%" class="text-right">
+          <input class="form-control input-sm" required="required" ng-model="item.unitPrice" type="number" ng-change="invoice.obj.recalculate()" step="0.01" min="0">
+        </td>
+        <td class="text-right">{{item.subTotal| currency}}</td>
+        <td class="text-right">
+          <select ng-model="item.taxRate" required="required" class="form-control input-sm" style="min-width: 70px" ng-change="invoice.obj.recalculate()">
+            <option value="23">23%</option>
+            <option value="22">22%</option>
+            <option value="8">8%</option>
+            <option value="5">5%</option>
+            <option value="0">0%</option>
+            <option value="zw">zw</option>
+          </select>
+        </td>
+        <td class="text-right">{{item.taxValue| currency}}</td>
+        <td class="text-right">{{item.total | currency}}</td>
+        <td class="hidden-print">
+          <button type="button" ng-click="invoice.obj.removeItem(item)" class="btn btn-default btn-xs">
+            <i class="glyphicon glyphicon-trash"></i>
+          </button>
+        </td>
+      </tr>
+      <tr class="hidden-print">
+        <td></td>
+        <td colspan="10">
+          <button type="button" ng-click="invoice.obj.addItem()" class="btn btn-danger btn-s">
+            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+            Dodaj pozycje
+          </button>
+        </td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <td colspan="6" class="text-right">
+          <strong>Razem</strong>
+        </td>
+        <td class="text-right">
+          <strong>{{invoice.obj.subTotal|currency}}</strong>
+        </td>
+        <td class="text-right">-</td>
+        <td class="text-right">
+          <strong>{{invoice.obj.totalTax|currency}}</strong>
+        </td>
+        <td class="text-right">
+          <strong>{{invoice.obj.total | currency}}</strong>
+        </td>
+        <td></td>
+      </tr>
+      <tr ng-repeat="taxInfo in invoice.obj.taxes">
+        <td colspan="6" class="text-right" ng-if="$first">W tym</td>
+        <td colspan="6" ng-if="!$first"></td>
+        <td class="text-right">{{taxInfo.subTotal|currency}}</td>
+        <td class="text-right">{{taxInfo.rateInfo()}}</td>
+        <td class="text-right">{{taxInfo.taxValue|currency}}</td>
+        <td class="text-right">{{taxInfo.total|currency}}</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <div class="row ">
+    <div class="col-xs-4">
+      <div class="form-group">
+        <label for="">Sposób płatności</label>
+        <select class="form-control" ng-model="invoice.obj.paymentMethod">
+          <option value="przelew">Przelew</option>
+          <option value="gotówka">Gotówka</option>
+          <option value="karta płatnicza">Karta płatnicza</option>
+          <option value="czek">Czek</option>
+          <option value="weksel">Weksel</option>
+          <option value="inny">Inny</option>
+          <option value="za pobraniem">Za pobraniem</option>
+        </select>
+      </div>
+      <div class="form-group" ng-show="invoice.obj.paymentMethod == 'przelew'">
+        <input class="form-control" placeholder="Bank" ng-model="invoice.obj.bank">
+      </div>
+      <div ng-show="invoice.obj.paymentMethod == 'przelew'">
+        <input class="form-control" placeholder="Nr konta" ng-model="invoice.obj.bank_account">
+      </div>
+    </div>
+    <div class="col-xs-4 col-xs-offset-4">
+      <table class="table text-right">
+        <tbody>
+          <tr>
+            <th>Zapłacono&nbsp;:</th>
+            <td>
+              <input class="form-control input-sm text-right" placeholder="0,00" ng-model="invoice.obj.paid" type="number" min="0" ng-change="invoice.obj.calcPayable()">
+            </td>
+          </tr>
+          <tr>
+            <th>Pozostało do zapłaty&nbsp;:</th>
+            <td>{{invoice.obj.toPay|currency}}</td>
+          </tr>
+          <tr>
+            <th>Słownie&nbsp;:</th>
+            <td ng-bind-html="invoice.obj.totalInWords"></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <textarea rows="" cols="" class="form-control" placeholder="Uwagi" ng-model="invoice.obj.memo"></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-5">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>Osoba upoważniona do odbioru faktury VAT</h4>
+        </div>
+        <div class="panel-body">
+          <br>
+          <hr>
+          <input class="form-control" ng-model="invoice.obj.buyer.person">
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-5 col-xs-offset-2">
+      <div class="span7">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4>Osoba upoważniona do wystawienia faktury VAT</h4>
+          </div>
+          <div class="panel-body">
+            <br>
+            <hr>
+            <input class="form-control" ng-model="invoice.obj.seller.person">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+<div class="container invoice visible-print">
+<div class="row">
+  <div class="col-xs-3">
+    <div ng-show="!logo" id="logo_input" data-toggle="tooltip" dropzone="dropzoneConfig" data-placement="bottom" class="well center-block logo-text hidden-print" title="Kliknij lub przeciągnij Twoje logo tutaj">Logo</div>
+    <img ng-src="{{logo}}">
+  </div>
+  <div class="col-xs-6 text-center">
+    <h3>Faktura VAT #1/05/2016</h3>
+  </div>
+  <div class="col-xs-3 text-right">
+    <p>Data wystawienia:
+      {{invoice.obj.date}}</p>
+    <p>Data sprzedazy:
+      {{invoice.obj.delivery_date}}</p>
+    <p>Termin płatności:
+      {{invoice.obj.due_date}}</p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-5">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4>Sprzedawca:</h4>
+        <span>{{invoice.obj.seller.name}}</span>
+      </div>
+      <div class="panel-body">
+        <div class="form-group" ng-bind-html="invoice.obj.seller.details | nl2br"></div>
+        <div>
+          NIP: {{invoice.obj.seller.taxId}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-5 col-xs-offset-2">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4>Nabywca:</h4>
+        <span>{{invoice.obj.buyer.name}}</span>
+      </div>
+      <div class="panel-body">
+        <div class="form-group" ng-bind-html="invoice.obj.buyer.details | nl2br"></div>
+        <div>
+          NIP: {{invoice.obj.buyer.taxId}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- / end client details section -->
+<h4 class="hidden-print">Pozycje faktury</h4>
+<table class="table table-bordered" id="invoiceItems">
+  <thead>
+    <tr>
+      <th></th>
+      <th>
+        Nazwa towaru lub usługi
+      </th>
+      <th>
+        PKWiU
+      </th>
+      <th>
+        Ilość
+      </th>
+      <th>
+        Jedn.
+      </th>
+      <th>
+        Cena jedn. netto
+      </th>
+      <!-- th>
+      <h4>Rabat</h4>
+    </th>
+    <th>
+    <h4>Cena z rabatem</h4>
+  </th -->
+      <th>
+        Wartość netto
+      </th>
+      <th>
+        Stawka Vat
+      </th>
+      <th>
+        Wartość Vat
+      </th>
+      <th>
+        Wartość brutto
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="item in invoice.obj.items">
+      <td>{{$index + 1}}</td>
+      <td style="width: 33%">
+        {{item.description}}
+      </td>
+      <td>
+        {{item.pkwiu}}
+      </td>
+      <td class="text-right">
+        {{item.qty}}
+      </td>
+      <td class="text-right">
+        {{item.unit}}
+      </td>
+      <td style="width: 10%" class="text-right">
+        {{item.unitPrice}}
+      </td>
+      <td class="text-right">{{item.subTotal| currency}}</td>
+      <td class="text-right">
+        {{item.taxRate}}
+      </td>
+      <td class="text-right">{{item.taxValue| currency}}</td>
+      <td class="text-right">{{item.total | currency}}</td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <th colspan="6" class="text-right">Razem</th>
+      <td class="text-right">{{invoice.obj.subTotal|currency}}</td>
+      <td class="text-right">-</td>
+      <td class="text-right">{{invoice.obj.totalTax|currency}}</td>
+      <td class="text-right">{{invoice.obj.total | currency}}</td>
+    </tr>
+    <tr ng-repeat="taxInfo in invoice.obj.taxes">
+      <td colspan="6" class="text-right" ng-if="$first">W tym</td>
+      <td colspan="6" ng-if="!$first"></td>
+      <td class="text-right">{{taxInfo.subTotal|currency}}</td>
+      <td class="text-right">{{taxInfo.rateInfo()}}</td>
+      <td class="text-right">{{taxInfo.taxValue|currency}}</td>
+      <td class="text-right">{{taxInfo.total|currency}}</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<div class="row ">
+  <div class="col-xs-4">
+    <div class="form-group">
+      <p>Sposób płatności:
+        {{invoice.obj.paymentMethod}}</p>
+    </div>
+    <div>
+      {{invoice.obj.bank}}
+    </div>
+    <div>
+      {{invoice.obj.bank_account}}
+    </div>
+  </div>
+  <div class="col-xs-4 col-xs-offset-4">
+    <table class="table text-right">
+      <tbody>
+        <tr>
+          <th>Zapłacono&nbsp;:</th>
+          <td>
+            <span class="text-right">{{invoice.obj.paid|currency}}</span>
+          </td>
+        </tr>
+        <tr>
+          <th>Pozostało do zapłaty&nbsp;:</th>
+          <td>{{invoice.obj.toPay|currency}}</td>
+        </tr>
+        <tr>
+          <th>Słownie&nbsp;:</th>
+          <td ng-bind-html="invoice.obj.totalInWords"></td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <span ng-bind-html="invoice.obj.memo | nl2br"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-5">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h6>Osoba upoważniona do odbioru faktury VAT</h6>
+      </div>
+      <div class="panel-body">
+        <br>
+        <hr>
+        <p class="text-center">{{invoice.obj.buyer.person}}<p></div>
+        </div>
+      </div>
+      <div class="col-xs-5 col-xs-offset-2">
+        <div class="span7">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h6>Osoba upoważniona do wystawienia faktury VAT</h6>
+            </div>
+            <div class="panel-body">
+              <br>
+              <hr>
+              <p class="text-center">{{invoice.obj.seller.person}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
