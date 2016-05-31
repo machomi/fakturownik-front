@@ -306,11 +306,10 @@
 </div>
 </form>
 
-<div class="container invoice visible-print">
-<div class="row">
+<div class="container invoice visible-print" id="invoice-print">
+<div class="row" style="margin-top: 15px">
   <div class="col-xs-3">
-    <div ng-show="!logo" id="logo_input" data-toggle="tooltip" dropzone="dropzoneConfig" data-placement="bottom" class="well center-block logo-text hidden-print" title="Kliknij lub przeciągnij Twoje logo tutaj">Logo</div>
-    <img ng-src="{{logo}}">
+    <img ng-if="logo" ng-src="{{logo}}">
   </div>
   <div class="col-xs-6 text-center">
     <h3>Faktura VAT #1/05/2016</h3>
@@ -318,7 +317,7 @@
   <div class="col-xs-3 text-right">
     <p>Data wystawienia:
       {{invoice.obj.date}}</p>
-    <p>Data sprzedazy:
+    <p>Data sprzedaży:
       {{invoice.obj.delivery_date}}</p>
     <p>Termin płatności:
       {{invoice.obj.due_date}}</p>
@@ -334,7 +333,8 @@
       <div class="panel-body">
         <div class="form-group" ng-bind-html="invoice.obj.seller.details | nl2br"></div>
         <div>
-          NIP: {{invoice.obj.seller.taxId}}
+          NIP:
+          {{invoice.obj.seller.taxId}}
         </div>
       </div>
     </div>
@@ -348,14 +348,14 @@
       <div class="panel-body">
         <div class="form-group" ng-bind-html="invoice.obj.buyer.details | nl2br"></div>
         <div>
-          NIP: {{invoice.obj.buyer.taxId}}
+          NIP:
+          {{invoice.obj.buyer.taxId}}
         </div>
       </div>
     </div>
   </div>
 </div>
 <!-- / end client details section -->
-<h4 class="hidden-print">Pozycje faktury</h4>
 <table class="table table-bordered" id="invoiceItems">
   <thead>
     <tr>
@@ -489,7 +489,8 @@
       <div class="panel-body">
         <br>
         <hr>
-        <p class="text-center">{{invoice.obj.buyer.person}}<p></div>
+        <p class="text-center">{{invoice.obj.buyer.person}}
+          <p></div>
         </div>
       </div>
       <div class="col-xs-5 col-xs-offset-2">

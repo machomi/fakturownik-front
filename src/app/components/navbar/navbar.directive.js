@@ -20,10 +20,11 @@
     return directive;
 
     /** @ngInject */
-    function NavbarController(pdfMakeService, $window) {
+    function NavbarController(pdfMakeService, $window, jsPdfService) {
       var vm = this;
       vm.getPdf = function() {
-        pdfMakeService.download();
+        // pdfMakeService.download();
+        jsPdfService.download();
       };
       vm.print = function() {
         $window.print();

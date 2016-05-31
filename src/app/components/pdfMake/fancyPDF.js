@@ -39,13 +39,13 @@ FancyPDF.Header = function(invoice) {
 						font : 'OpenSansBold',
 						fontSize : 20,
 						bold : true,
-						margin : [ 5, 0, 5, 0 ],
+						margin : [ 5, 0, 5, 0 ]
 					// color : '#363636',
 					// fillColor : '#363636',
 					// background : '#363636',
 					} ], [ {
 						text : '# ' + invoice.number,
-						margin : [ 5, 0, 5, 0 ],
+						margin : [ 5, 0, 5, 0 ]
 					} ] ]
 				},
 				layout : 'noBorders'
@@ -59,13 +59,13 @@ FancyPDF.Header = function(invoice) {
 			}, {
 				text : 'Termin płatności: ' + invoice.due_date,
 				fontSize : 7
-			}, ],
+			} ],
 			alignment : 'right'
 		} ],
 		// optional space between columns
 		columnGap : 10
 	};
-}
+};
 
 FancyPDF.Organizations = function(invoice) {
 	return {
@@ -96,11 +96,11 @@ FancyPDF.Organizations = function(invoice) {
 			stack : [ {
 				text : "Nabywca:",
 				bold : true,
-				fontSize : 8,
+				fontSize : 8
 			}, {
 				text : invoice.buyer.name,
 				font : 'OpenSansLight',
-				fontSize : 12,
+				fontSize : 12
 			}, {
 				text : invoice.buyer.details,
 				alignment : 'justify',
@@ -111,7 +111,7 @@ FancyPDF.Organizations = function(invoice) {
 					italics : true
 				} ],
 				fontSize : 8
-			} ],
+			} ]
 		// alignment : 'right'
 		} ],
 		// optional space between columns
@@ -256,7 +256,7 @@ FancyPDF.InvoiceTable = function(invoice) {
 		}, {
 			text : '' + taxInfo.taxValue
 		}, {
-			text : '' + taxInfo.total,
+			text : '' + taxInfo.total
 		} ];
 
 		invoiceTableRows.push(taxInfoRow);

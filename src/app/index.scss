@@ -30,6 +30,7 @@ body {
 
 body, h1, h2, h3, h4, h5, h6 {
   font-family: 'Bree Serif', serif;
+  // background: #ffffff;
 }
 
 @media screen{
@@ -39,6 +40,7 @@ body, h1, h2, h3, h4, h5, h6 {
 }
 
 .invoice {
+  background-color: #fff;
   .document-title {
     // font-size: 2em;
   }
